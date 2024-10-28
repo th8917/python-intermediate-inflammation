@@ -61,6 +61,7 @@ def daily_max(data):
 def daily_min(data):
     """Calculate the daily minimum of a 2D inflammation data array for each day.
 
+<<<<<<< HEAD
    :param data: A 2D data array with inflammation data (each row contains measurements for a single patient across all days).
    :returns: An array of minimum values of measurements for each day.
    """
@@ -70,3 +71,15 @@ def patient_normalise(data):
     """Normalise patient data from a 2D inflammation data array."""
     max = np.max(data, axis=1)
     return data / max[:, np.newaxis]
+=======
+def s_dev(data):
+    """Computes and returns standard deviation for data."""
+    mmm = np.mean(data, axis=0)
+    devs = []
+    for entry in data:
+        devs.append((entry - mmm) * (entry - mmm))
+
+    standard_deviation = sum(devs) / len(data)
+    return {'standard deviation': standard_deviation}
+
+>>>>>>> feature-std-dev

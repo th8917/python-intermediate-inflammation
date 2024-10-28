@@ -2,6 +2,7 @@
 import os
 import numpy as np
 import numpy.testing as npt
+<<<<<<< HEAD
 import pytest
 
 @pytest.mark.parametrize(
@@ -12,6 +13,13 @@ import pytest
     ])
 def test_daily_mean(test, expected):
     """Test mean function works for array of zeroes and positive integers."""
+=======
+import os
+import pytest
+
+def test_daily_mean_zeros():
+    """Test that mean function works for an array of zeros."""
+>>>>>>> feature-std-dev
     from inflammation.models import daily_mean
     npt.assert_array_equal(daily_mean(np.array(test)), np.array(expected))
 
@@ -23,6 +31,7 @@ def test_load_from_json(tmpdir):
     result = load_json(example_path)
     npt.assert_array_equal(result, [[1, 2, 3], [4, 5, 6]])
 
+<<<<<<< HEAD
 @pytest.mark.parametrize(
     "test, expected",
     [
@@ -68,3 +77,15 @@ def test_patient_normalise(test, expected):
     from inflammation.models import patient_normalise
 
     npt.assert_almost_equal(patient_normalise(np.array(test)), np.array(expected), decimal=2)
+=======
+
+@pytest.mark.parametrize('data, expected_standard_deviation', [
+    ([0, 0, 0], 0.0),
+    ([1.0, 1.0, 1.0], 0),
+    ([0.0, 2.0], 1.0)
+])
+def test_daily_standard_deviation(data, expected_standard_deviation):
+    from inflammation.models import s_dev
+    result_data = s_dev(data)['standard deviation']
+    npt.assert_approx_equal(result_data, expected_standard_deviation)
+>>>>>>> feature-std-dev

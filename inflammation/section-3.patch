@@ -1,0 +1,154 @@
+diff --git a/inflammation/compute_data.py b/inflammation/compute_data.py
+index f8da7a6..6d09e0d 100644
+--- a/inflammation/compute_data.py
++++ b/inflammation/compute_data.py
+@@ -1,11 +1,26 @@
+ """Module containing mechanism for calculating standard deviation between datasets.
+ """
+ 
+-import glob
+-import os
+ import numpy as np
+ 
+ from inflammation import models, views
++from inflammation.csvdatasource import CSVDataSource
++
++
++def compute_standard_deviation_by_day(data):
++    means_by_day = map(models.daily_mean, data)
++    means_by_day_matrix = np.stack(list(means_by_day))
++    daily_standard_deviation = np.std(means_by_day_matrix, axis=0)
++    return daily_standard_deviation
++
++
++def analyse_data_from_data_source(data_source):
++    data = data_source.load_inflammation_data()
++    daily_standard_deviation = compute_standard_deviation_by_day(data)
++    graph_data = {
++        "standard deviation by day": daily_standard_deviation,
++    }
++    return graph_data
+ 
+ 
+ def analyse_data(data_dir):
+@@ -14,18 +29,4 @@ def analyse_data(data_dir):
+     Gets all the inflammation csvs within a directory, works out the mean
+     inflammation value for each day across all datasets, then graphs the
+     standard deviation of these means."""
+-    data_file_paths = glob.glob(os.path.join(data_dir, 'inflammation*.csv'))
+-    if len(data_file_paths) == 0:
+-        raise ValueError(f"No inflammation csv's found in path {data_dir}")
+-    data = map(models.load_csv, data_file_paths)
+-
+-
+-    means_by_day = map(models.daily_mean, data)
+-    means_by_day_matrix = np.stack(list(means_by_day))
+-
+-    daily_standard_deviation = np.std(means_by_day_matrix, axis=0)
+-
+-    graph_data = {
+-        'standard deviation by day': daily_standard_deviation,
+-    }
+-    views.visualize(graph_data)
++    return analyse_data_from_data_source(CSVDataSource(data_dir))
+diff --git a/inflammation/csvdatasource.py b/inflammation/csvdatasource.py
+new file mode 100644
+index 0000000..af85700
+--- /dev/null
++++ b/inflammation/csvdatasource.py
+@@ -0,0 +1,16 @@
++import glob
++import os
++
++from inflammation import models
++
++
++class CSVDataSource:
++
++    def __init__(self, data_dir):
++        self.data_dir = data_dir
++
++    def load_inflammation_data(self):
++        data_file_paths = glob.glob(os.path.join(self.data_dir, "inflammation*.csv"))
++        if len(data_file_paths) == 0:
++            raise ValueError(f"No inflammation csv's found in path {self.data_dir}")
++        return map(models.load_csv, data_file_paths)
+diff --git a/inflammation/shape.py b/inflammation/shape.py
+new file mode 100644
+index 0000000..b3ce14e
+--- /dev/null
++++ b/inflammation/shape.py
+@@ -0,0 +1,10 @@
++class Circle:
++    def __init__(self, radius):
++        self.radius = radius
++
++    def area(self):
++        return 3.14 * self.radius**2
++
++
++my_circle = Circle(10)
++print(my_circle.radius)
+diff --git a/tests/test_compute_data.py b/tests/test_compute_data.py
+new file mode 100644
+index 0000000..51f91ef
+--- /dev/null
++++ b/tests/test_compute_data.py
+@@ -0,0 +1,57 @@
++from pathlib import Path
++
++import numpy.testing as npt
++
++
++def test_analyse_data():
++    from inflammation.compute_data import analyse_data
++
++    path = Path.cwd() / "data"
++
++    result = analyse_data(path)
++
++    npt.assert_array_almost_equal(
++        result["standard deviation by day"],
++        [
++            0.0,
++            0.22510285714822967,
++            0.18157298807917438,
++            0.1264422964082338,
++            0.9495480975212225,
++            0.27118211160458394,
++            0.2510471895043333,
++            0.22330897462517746,
++            0.8968050285648822,
++            0.21573875376608442,
++            1.242355482565972,
++            0.6304209352135726,
++            1.5751169611676539,
++            2.1885024158255058,
++            0.3729574000100042,
++            0.6939553833454094,
++            2.5236516232301356,
++            0.31793119839609973,
++            1.2285065710291208,
++            1.6314963923941304,
++            2.45861227231045,
++            1.5555605158651071,
++            2.821485304053107,
++            0.9211757784564323,
++            0.7617697879783256,
++            2.1834618812878412,
++            0.5536843487265027,
++            1.7844163161959075,
++            0.2654922053678998,
++            1.4393841650828865,
++            0.7895976862762704,
++            0.649138793201813,
++            1.160785440771107,
++            0.4241799459465404,
++            0.36019113581678774,
++            0.8080170725338499,
++            0.5032303058647608,
++            0.4757466516363618,
++            0.45197397977655945,
++            0.22070226718532082,
++        ],
++    )
