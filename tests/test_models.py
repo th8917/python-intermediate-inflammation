@@ -3,7 +3,22 @@ import os
 import numpy as np
 import numpy.testing as npt
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 92792ba06e9ebf079cce99be7f5868c35d5c1605
 import pytest
+
+def test_daily_mean_zeros():
+    """Test that mean function works for an array of zeros."""
+    from inflammation.models import daily_mean
+
+    test_input = np.array([[0, 0],
+                           [0, 0],
+                           [0, 0]])
+    test_result = np.array([0, 0])
+
+    # Need to use Numpy testing functions to compare arrays
+    npt.assert_array_equal(daily_mean(test_input), test_result)
 
 @pytest.mark.parametrize(
     "test, expected",
@@ -13,6 +28,7 @@ import pytest
     ])
 def test_daily_mean(test, expected):
     """Test mean function works for array of zeroes and positive integers."""
+<<<<<<< HEAD
 =======
 import os
 import pytest
@@ -20,6 +36,8 @@ import pytest
 def test_daily_mean_zeros():
     """Test that mean function works for an array of zeros."""
 >>>>>>> feature-std-dev
+=======
+>>>>>>> 92792ba06e9ebf079cce99be7f5868c35d5c1605
     from inflammation.models import daily_mean
     npt.assert_array_equal(daily_mean(np.array(test)), np.array(expected))
 
@@ -32,6 +50,9 @@ def test_load_from_json(tmpdir):
     npt.assert_array_equal(result, [[1, 2, 3], [4, 5, 6]])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 92792ba06e9ebf079cce99be7f5868c35d5c1605
 @pytest.mark.parametrize(
     "test, expected",
     [
@@ -77,6 +98,7 @@ def test_patient_normalise(test, expected):
     from inflammation.models import patient_normalise
 
     npt.assert_almost_equal(patient_normalise(np.array(test)), np.array(expected), decimal=2)
+<<<<<<< HEAD
 =======
 
 @pytest.mark.parametrize('data, expected_standard_deviation', [
@@ -89,3 +111,6 @@ def test_daily_standard_deviation(data, expected_standard_deviation):
     result_data = s_dev(data)['standard deviation']
     npt.assert_approx_equal(result_data, expected_standard_deviation)
 >>>>>>> feature-std-dev
+=======
+
+>>>>>>> 92792ba06e9ebf079cce99be7f5868c35d5c1605
