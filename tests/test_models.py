@@ -4,6 +4,18 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+def test_daily_mean_zeros():
+    """Test that mean function works for an array of zeros."""
+    from inflammation.models import daily_mean
+
+    test_input = np.array([[0, 0],
+                           [0, 0],
+                           [0, 0]])
+    test_result = np.array([0, 0])
+
+    # Need to use Numpy testing functions to compare arrays
+    npt.assert_array_equal(daily_mean(test_input), test_result)
+
 @pytest.mark.parametrize(
     "test, expected",
     [
@@ -68,3 +80,4 @@ def test_patient_normalise(test, expected):
     from inflammation.models import patient_normalise
 
     npt.assert_almost_equal(patient_normalise(np.array(test)), np.array(expected), decimal=2)
+
